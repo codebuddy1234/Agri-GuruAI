@@ -1,0 +1,52 @@
+# Local development stack: PostgreSQL + FastAPI + static HTML/CSS/JS frontend.
+#
+# The backend remains FastAPI + Python + PostgreSQL. The frontend is now a
+# dependency-free vanilla HTML/CSS/JS single-page app served by nginx.
+#
+#   cp .env.example backend/.env   # then set a real SECRET_KEY
+#   docker compose up --build
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-agriguru}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-agriguru}
+      POSTGRES_DB: ${POSTGRES_DB:-agriguru}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-agriguru}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: ./backend
+    env_file:
+      - ./backend/.env
+    environment:
+      POSTGRES_HOST: db
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./data:/app/../data:ro
+
+  web:
+    # Vanilla frontend — no Node build step needed. Hash-based routing means
+    # no nginx SPA rewrite rules are required.
+    image: nginx:alpine
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
+
+volumes:
+  postgres_data:

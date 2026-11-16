@@ -1,0 +1,12 @@
+{
+  "model_name": "disease_detection",
+  "model_version": "mnv2_pv_original_v1",
+  "algorithm": "MobileNetV2",
+  "input_size": [160, 160],
+  "n_classes": 38,
+  "preprocessing": "mobilenet_v2 (scale to [-1, 1])",
+  "dataset": "PlantVillage (38 classes)",
+  "labels_file": "labels.json",
+  "artifact": "best_mnv2_pv_original.keras",
+  "caveat": "Labels follow the standard PlantVillage alphabetical order. If predictions look systematically shifted, replace labels.json with the exact class order used during training."
+}

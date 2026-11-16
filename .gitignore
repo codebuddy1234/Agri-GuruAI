@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Environment & secrets — never commit real values
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# ML artifacts are build outputs, reproduced by the training script.
+# metadata.json is committed so the model in use is always identifiable.
+backend/app/ml/**/artifacts/*.joblib
+backend/app/ml/**/artifacts/*.pkl
+# Downloaded pretrained weights (e.g. disease detection .keras): too large
+# for git. Place the file in backend/app/ml/disease_detection/artifacts/
+# (see backend/app/ml/disease_detection/artifacts/metadata.json).
+backend/app/ml/**/artifacts/*.keras
+
+# Processed data is derived from data/raw
+data/processed/*
+!data/processed/.gitkeep
+
+# Frontend is dependency-free vanilla HTML/CSS/JS (no Node build output).
+
+# Editors & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
